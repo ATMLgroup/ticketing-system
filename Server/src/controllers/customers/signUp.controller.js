@@ -10,11 +10,12 @@ module.exports = async (request, response) => {
         const hashedPassword = await argon2.hash(password)
         const databaseStatus = await insertCustomer(firstName, lastName, email, hashedPassword, phoneNumber)
         if (databaseStatus.status) {
-            successResponse(response, "signup successful")
+            successResponse(response, "signup successfully")
         } else {
             badRequest(response, "error in signUp", databaseStatus.message)
         }
-    } catch {
+    } catch (err){
+        console.log(err)
         serverError(response)
     }
 }
