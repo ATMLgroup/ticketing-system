@@ -1,11 +1,14 @@
-import {Button, Checkbox, Input, Typography} from "antd";
+import {Button, Checkbox, Input, Typography, App} from "antd";
 import {LockOutlined, MailOutlined} from "@ant-design/icons";
-import {useState} from "react"; // به جای useFetch
+import {useState} from "react";
+import Cookie from "js-cookie"
 import sendRequest from "../../hook/sendRequest";
 
 const {Text} = Typography;
 
 export const LoginInputs = ({signedInButton}) => {
+    const {message} = App.useApp()
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [emailError, setEmailError] = useState("");
@@ -42,6 +45,12 @@ export const LoginInputs = ({signedInButton}) => {
             setPasswordError("error")
         }
     }
+
+    /**
+     * @description send post request and handle errors
+     * @returns {Promise<void>}
+     * @constructor
+     */
     const LoginHandler = async () => {
         setLoadingButton(true)
         const {data, error} = await sendRequest("customers/signin", "POST", {
@@ -49,8 +58,12 @@ export const LoginInputs = ({signedInButton}) => {
             password: password
         })
         setLoadingButton(false)
-        console.log("data", data)
-        console.log("error", error)
+        if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
+            message.success("YES")
+            Cookie.set("token", data.data.token)
+        } else {
+            message.error(error.response.data.detail)
+        }
     };
 
     return (
