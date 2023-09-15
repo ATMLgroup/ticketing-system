@@ -9,8 +9,8 @@ module.exports = async (request, response) => {
     try {
         const {email, password} = request.body
         const databaseResponse = await selectByEmail(email)
-        if (databaseResponse.status) {
-            const hashedPassword = databaseResponse.items.password
+        const hashedPassword = databaseResponse.items?.password || undefined
+        if (databaseResponse.status && hashedPassword) {
             const comparePassword = await argon2.verify(hashedPassword, password)
             if (comparePassword) {
                 const token = await createToken(email)
@@ -23,7 +23,7 @@ module.exports = async (request, response) => {
                 badRequestResponse(response, "error", "password mismatch")
             }
         } else {
-            throw new Error("database error")
+            badRequestResponse(response, "error", "There is no email")
         }
     } catch (err) {
         console.log(err)
