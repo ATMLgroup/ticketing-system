@@ -2,12 +2,14 @@ import {Button, Checkbox, Input, Typography, App} from "antd";
 import {LockOutlined, MailOutlined} from "@ant-design/icons";
 import {useState} from "react";
 import Cookie from "js-cookie"
+import {useNavigate} from "react-router-dom"
 import sendRequest from "../../hook/sendRequest";
 
 const {Text} = Typography;
 
 export const LoginInputs = ({signedInButton}) => {
     const {message} = App.useApp()
+    const navigate = useNavigate()
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -59,7 +61,7 @@ export const LoginInputs = ({signedInButton}) => {
         })
         setLoadingButton(false)
         if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
-            message.success("YES")
+            navigate("/dashboard")
             Cookie.set("token", data.data.token)
         } else {
             message.error(error.response.data.detail)
