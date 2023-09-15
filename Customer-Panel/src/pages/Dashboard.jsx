@@ -2,6 +2,7 @@ import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Cookie from "js-cookie";
 import jwtDecode from "jwt-decode";
+import {DashboardLayout} from "../layout/dashboard/DashboardLayout";
 
 export const Dashboard = () => {
     const [isValidToken, setIsValidToken] = useState(false);
@@ -21,9 +22,7 @@ export const Dashboard = () => {
     return (
         <>
             {
-                isValidToken && (<h1>
-                    Dashboard page
-                </h1>)
+                isValidToken && (<DashboardLayout/>)
             }
         </>
     )
