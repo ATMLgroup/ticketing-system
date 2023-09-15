@@ -1,13 +1,14 @@
 import {Typography} from "antd";
+
 const {Title} = Typography
 
-export const LoginTitle = () => {
+export const LoginTitle = ({title}) => {
     return (
         <>
             <Title
                 level={3}
                 style={{textAlign: "center"}}>
-                Customer ticketing system
+                {title}
             </Title>
         </>
     )
