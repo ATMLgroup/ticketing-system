@@ -2,7 +2,7 @@ import {Col, Input, Row, Typography} from "antd";
 import {LeftOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons";
 
 export const DashboardFilter = () => {
-    const {Title, Text} = Typography
+    const { Text} = Typography
 
     return (
         <>

@@ -1,20 +1,46 @@
-import {BoldOutlined, LockOutlined, PoweroffOutlined, SettingOutlined} from "@ant-design/icons";
-import {Button, Col, FloatButton, Input, Modal, Row, Select, Tooltip} from "antd";
+import {
+    BoldOutlined,
+    ExclamationCircleFilled,
+    LockOutlined,
+    PoweroffOutlined,
+    SettingOutlined
+} from "@ant-design/icons";
+import {Button, Col, FloatButton, Input, Modal, Row, Tooltip} from "antd";
 import {useState} from "react";
 
 export const DashboardSetting = () => {
-    const {TextArea} = Input
+    const {confirm} = Modal;
 
     const [changePasswordStatus, setChangePasswordStatus] = useState(false);
-    const [signOutModalStatus, setSignOutModalStatus] = useState(false);
 
+    /**
+     * @description Change the password handler
+     * @param {Boolean}value true => show modal / false => hide modal
+     */
     const changePasswordModalHandler = (value) => {
         setChangePasswordStatus(value)
     }
 
-    const signOutModalHandler = (value) => {
-        setSignOutModalStatus(value)
-    }
+    /**
+     * @description Sign out modal handlers
+     */
+    const showDeleteConfirm = () => {
+        confirm({
+            title: 'Sign out',
+            icon: <ExclamationCircleFilled/>,
+            content: 'Are you sure you want to sign out?',
+            okText: 'Yes',
+            okType: 'danger',
+            centered: true,
+            cancelText: 'Cancel',
+            onOk() {
+                console.log('OK');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
 
     return (
         <>
@@ -65,7 +91,9 @@ export const DashboardSetting = () => {
                 <Tooltip
                     placement="leftTop"
                     title={"Sign Out"}>
-                    <FloatButton icon={<PoweroffOutlined/>}/>
+                    <FloatButton
+                        onClick={() => showDeleteConfirm()}
+                        icon={<PoweroffOutlined/>}/>
                 </Tooltip>
                 <Tooltip
                     placement="leftTop"

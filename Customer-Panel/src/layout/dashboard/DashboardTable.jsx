@@ -4,7 +4,7 @@ import {useEffect} from "react";
 
 export const DashboardTable = () => {
 
-    const {Title, Text} = Typography
+    const {Text} = Typography
 
     const dataSource = [
         {
