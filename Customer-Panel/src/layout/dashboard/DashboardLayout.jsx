@@ -1,6 +1,7 @@
-import {Button, Col, Input, Row, Space, Table, Typography} from "antd";
-import {LeftOutlined, PaperClipOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons"
+import {Button, Col, Input, Row, Table, Tag, Tooltip, Typography} from "antd";
+import {LeftOutlined, PaperClipOutlined, RightOutlined, EyeOutlined, SearchOutlined} from "@ant-design/icons"
 import style from "../../styles/dashboard/dashboard.module.css"
+import {useEffect, useRef} from "react";
 
 export const DashboardLayout = () => {
 
@@ -9,7 +10,7 @@ export const DashboardLayout = () => {
     const dataSource = [
         {
             key: '1',
-            title: 'Title Issue 1',
+            title: 'Can not access the system. please help me!',
             requested: '15 September 2023',
             priority: 'High',
             status: 'Open',
@@ -17,7 +18,7 @@ export const DashboardLayout = () => {
         },
         {
             key: '2',
-            title: 'Title Issue 2',
+            title: 'Can not access the system. please help me!',
             requested: '15 September 2023',
             priority: 'Medium',
             status: 'Pending',
@@ -25,7 +26,7 @@ export const DashboardLayout = () => {
         },
         {
             key: '3',
-            title: 'Title Issue 3',
+            title: 'Can not access the system. please help me!',
             requested: '15 September 2023',
             priority: 'Low',
             status: 'Close',
@@ -37,29 +38,96 @@ export const DashboardLayout = () => {
         {
             title: 'Title',
             dataIndex: 'title',
-            key: 'title'
+            key: 'title',
+            render: (text) => (
+                <>
+                    <Text strong>
+                        {text}
+                    </Text>
+                </>
+            )
         },
         {
             title: 'Requested',
             dataIndex: 'requested',
-            key: 'requested'
+            key: 'requested',
+            render: (text) => (
+                <>
+                    <Text type="secondary">
+                        {text}
+                    </Text>
+                </>
+            )
         },
         {
             title: 'priority',
             dataIndex: 'priority',
-            key: 'priority'
+            key: 'priority',
+            render: (tag) => (
+                <>
+                    {
+                        tag === "High" && <Tag
+                            style={{display: "table", margin: "0 auto"}}
+                            color={"red"}>
+                            {tag}</Tag> ||
+                        tag === "Medium" && <Tag
+                            style={{display: "table", margin: "0 auto"}}
+                            color={"orange"}>
+                            {tag}</Tag> ||
+                        tag === "Low" && <Tag
+                            style={{display: "table", margin: "0 auto"}}
+                            color={"geekblue"}>
+                            {tag}</Tag>
+                    }
+                </>
+            ),
         },
         {
             title: 'status',
             dataIndex: 'status',
-            key: 'status'
+            key: 'status',
+            render: (tag) => (
+                <>
+                    {
+                        tag === "Open" && <Tag
+                            style={{display: "table", margin: "0 auto"}}
+                            color={"green-inverse"}>{tag}</Tag> ||
+                        tag === "Pending" && <Tag
+                            style={{display: "table", margin: "0 auto"}}
+                            color={"orange-inverse"}>{tag}</Tag> ||
+                        tag === "Close" && <Tag
+                            style={{display: "table", margin: "0 auto"}}
+                            color={"red-inverse"}>{tag}</Tag>
+                    }
+                </>
+            ),
         },
         {
             title: 'view',
             dataIndex: 'view',
-            key: 'view'
+            key: 'view',
+            render: () => (
+                <>
+                    <Tooltip title="View Ticket">
+                        <Button
+                            style={{display: "table", margin: "0 auto"}}
+                            shape="circle"
+                            icon={<EyeOutlined/>}/>
+                    </Tooltip>
+                </>
+            )
         },
     ];
+
+    // Centering the last 3 titles of the table
+    useEffect(() => {
+        const tableThead = document.querySelector('.ant-table-thead')
+        const cells = tableThead.children[0].cells
+        const cellsToCenterAlign = [2, 3, 4];
+        cellsToCenterAlign.forEach(index => {
+            cells[index].style.textAlign = "center"
+        })
+    }, []);
 
     return (
         <>
@@ -101,7 +169,11 @@ export const DashboardLayout = () => {
                         </Text>
                     </Col>
                 </Row>
-                <Table dataSource={dataSource} columns={columns} pagination={false}/>
+                <Table
+                    align={"center"}
+                    dataSource={dataSource}
+                    columns={columns}
+                    pagination={false}/>
             </div>
         </>
     )
