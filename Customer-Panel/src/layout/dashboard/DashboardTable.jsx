@@ -59,7 +59,7 @@ export const DashboardTable = () => {
             )
         },
         {
-            title: 'priority',
+            title: 'Priority',
             dataIndex: 'priority',
             key: 'priority',
             render: (tag) => (
@@ -82,7 +82,7 @@ export const DashboardTable = () => {
             ),
         },
         {
-            title: 'status',
+            title: 'Status',
             dataIndex: 'status',
             key: 'status',
             render: (tag) => (
@@ -102,7 +102,7 @@ export const DashboardTable = () => {
             ),
         },
         {
-            title: 'view',
+            title: 'View',
             dataIndex: 'view',
             key: 'view',
             render: () => (

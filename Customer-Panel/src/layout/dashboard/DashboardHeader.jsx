@@ -48,12 +48,14 @@ export const DashboardHeader = () => {
                         <div style={{marginTop: "50px"}}>
                             <Button
                                 onClick={() => modalHandler(false)}
-                                type={"dashed"}>cancel</Button>
+                                type={"dashed"}>
+                                Cancel
+                            </Button>
                             <Button
                                 onClick={() => modalHandler(false)}
                                 type={"primary"}
                                 style={{backgroundColor: "rgb(4, 195, 56)"}}>
-                                create
+                                Create
                             </Button>
                         </div>
                     </>
