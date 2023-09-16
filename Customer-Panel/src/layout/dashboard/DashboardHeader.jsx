@@ -1,8 +1,24 @@
-import {Button, Col, Modal, Row, Typography} from "antd";
-import {PaperClipOutlined} from "@ant-design/icons";
+import {Button, Col, Input, Modal, Row, Select, Typography} from "antd";
+import {PaperClipOutlined, BoldOutlined} from "@ant-design/icons";
 import {useState} from "react";
 
 export const DashboardHeader = () => {
+    const {TextArea} = Input
+    const options = [
+        {
+            value: 'High',
+            label: 'High',
+        },
+        {
+            value: 'Medium',
+            label: 'Medium',
+        },
+        {
+            value: 'Low',
+            label: 'Low',
+        },
+    ]
+
     const {Title, Text} = Typography
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,24 +41,47 @@ export const DashboardHeader = () => {
                 width={"85%"}
                 closable={false}
                 afterClose={() => updateTableList()}
-                title="Basic Modal"
+                title="Create a new ticket"
                 open={isModalOpen}
                 footer={(_, {OkBtn, CancelBtn}) => (
                     <>
-                        <Button
-                            onClick={() => modalHandler(false)}
-                            type={"dashed"}>cancel</Button>
-                        <Button
-                            onClick={() => modalHandler(false)}
-                            type={"primary"}
-                            style={{backgroundColor: "rgb(4, 195, 56)"}}>
-                            create
-                        </Button>
+                        <div style={{marginTop: "50px"}}>
+                            <Button
+                                onClick={() => modalHandler(false)}
+                                type={"dashed"}>cancel</Button>
+                            <Button
+                                onClick={() => modalHandler(false)}
+                                type={"primary"}
+                                style={{backgroundColor: "rgb(4, 195, 56)"}}>
+                                create
+                            </Button>
+                        </div>
                     </>
                 )}>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                <Row justify={"space-around"} align={"middle"}>
+                    <Col span={18}>
+                        <Input
+                            placeholder={"Ticket title"}
+                            size={"large"}
+                            style={{width: "80%", marginTop: "10px"}}
+                            prefix={<BoldOutlined style={{color: "rgba(0, 0, 0, 0.45)"}}/>}/>
+                    </Col>
+                    <Col span={6}>
+                        <Select
+                            size={"large"}
+                            placeholder="Select a priority"
+                            options={options}
+                            style={{width: "80%", display: "block", float: "right"}}
+                        />
+                    </Col>
+                    <Col span={24}>
+                        <TextArea
+                            placeholder="Ticket Description"
+                            autoSize={{minRows: 5, maxRows: 7}}
+                            style={{marginTop: "20px"}}
+                        />
+                    </Col>
+                </Row>
             </Modal>
             <Row
                 align={"middle"}
