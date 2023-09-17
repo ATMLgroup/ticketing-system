@@ -1,19 +1,21 @@
+import {useSelector} from "react-redux";
 import style from "../../styles/dashboard/dashboard.module.css"
 import {DashboardTable} from "./DashboardTable";
 import {DashboardHeader} from "./DashboardHeader";
 import {DashboardFilter} from "./DashboardFilter";
-import {FloatButton, Tooltip} from "antd"
-import {PoweroffOutlined, LockOutlined, SettingOutlined} from "@ant-design/icons";
 import {DashboardSetting} from "./DashboardSetting";
+import {DashboardEmptyTickets} from "./DashboardEmptyTickets";
 
 export const DashboardLayout = () => {
+    const {tickets} = useSelector((state) => state.tickets)
+    const ticketsLength = tickets.length;
 
     return (
         <>
             <div className={style.dashboardContainer}>
                 <DashboardHeader/>
-                <DashboardFilter/>
-                <DashboardTable/>
+                {ticketsLength > 0 ? <DashboardFilter/> : null}
+                {ticketsLength > 0 ? <DashboardTable/> : <DashboardEmptyTickets/>}
                 <DashboardSetting/>
             </div>
         </>
