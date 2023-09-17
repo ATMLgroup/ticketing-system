@@ -1,9 +1,15 @@
 import {Button, Col, Input, Modal, Row, Select, Typography} from "antd";
 import {PaperClipOutlined, BoldOutlined} from "@ant-design/icons";
 import {useState} from "react";
+import {useSelector} from "react-redux";
 
 export const DashboardHeader = () => {
+    const {tickets} = useSelector((state) => state.tickets)
+
     const {TextArea} = Input
+
+    const ticketsLength = tickets.length;
+
     const options = [
         {
             value: 'High',
@@ -91,7 +97,14 @@ export const DashboardHeader = () => {
                 style={{marginBottom: "20px"}}>
                 <Col span={12}>
                     <Title>
-                        Tickets <Text type={"secondary"}>72 Issues</Text>
+                        Tickets
+                        {
+                            ticketsLength > 0 ?
+                                <Text type={"secondary"}>
+                                    {ticketsLength} Issues
+                                </Text>
+                                : null
+                        }
                     </Title>
                 </Col>
                 <Col span={12}>
