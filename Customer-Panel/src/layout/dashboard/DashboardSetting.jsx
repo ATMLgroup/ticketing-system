@@ -5,23 +5,35 @@ import {
     PoweroffOutlined,
     SettingOutlined
 } from "@ant-design/icons";
-import {Button, Col, FloatButton, Input, Modal, Row, Tooltip} from "antd";
+import {App, Button, Col, FloatButton, Input, Modal, Row, Tooltip} from "antd";
 import {useState} from "react";
 import Cookie from "js-cookie";
 import {useNavigate} from "react-router-dom";
+import sendRequest from "../../hook/sendRequest";
 
 export const DashboardSetting = () => {
     const {confirm} = Modal;
+    const {message} = App.useApp()
+
     const navigate = useNavigate()
 
     const [changePasswordStatus, setChangePasswordStatus] = useState(false);
+    const [currentPassword, serCurrentPassword] = useState("")
+    const [newPassword, serNewPassword] = useState("")
 
     /**
      * @description Change the password handler
-     * @param {Boolean}value true => show modal / false => hide modal
      */
-    const changePasswordModalHandler = (value) => {
-        setChangePasswordStatus(value)
+    const changePasswordModalHandler = async () => {
+        const {data, error} = await sendRequest("customers/change_password", "POST", {
+            currentPassword: currentPassword,
+            newPassword: newPassword
+        })
+        if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
+            message.success("change password successfully")
+        } else {
+            message.error(error.response.data.detail)
+        }
     }
 
     /**
@@ -55,19 +67,24 @@ export const DashboardSetting = () => {
                     <>
                         <div style={{marginTop: "50px"}}>
                             <Button
-                                onClick={() => changePasswordModalHandler(false)}
+                                onClick={() => setChangePasswordStatus(false)}
                                 type={"dashed"}>Cancel</Button>
                             <Button
-                                onClick={() => changePasswordModalHandler(false)}
+                                disabled={!(currentPassword.length > 0 && newPassword.length > 0)}
+                                onClick={() => changePasswordModalHandler()}
                                 type={"primary"}>
                                 Update Password
                             </Button>
                         </div>
                     </>
                 )}>
-                <Row justify={"space-around"} align={"middle"}>
+                <Row
+                    justify={"space-around"}
+                    align={"middle"}>
                     <Col span={12}>
                         <Input.Password
+                            onChange={(e) => serCurrentPassword(e.target.value)}
+                            value={currentPassword}
                             placeholder={"Current password"}
                             size={"large"}
                             style={{width: "90%", marginTop: "10px"}}
@@ -75,6 +92,8 @@ export const DashboardSetting = () => {
                     </Col>
                     <Col span={12}>
                         <Input.Password
+                            onChange={(e) => serNewPassword(e.target.value)}
+                            value={newPassword}
                             placeholder={"New password"}
                             size={"large"}
                             style={{width: "90%", marginTop: "10px", float: "right"}}
