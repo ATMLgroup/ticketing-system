@@ -5,11 +5,13 @@ export const DashboardEmptyTickets = () => {
 
     return (
         <>
-            <Empty description={
-                <Text type="secondary">
-                    No ticket has been registered yet.
-                </Text>
-            }/>
+            <Empty
+                style={{marginTop: "15%"}}
+                description={
+                    <Text type="secondary">
+                        No ticket has been registered yet.
+                    </Text>
+                }/>
         </>
     )
 }
