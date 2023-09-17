@@ -7,9 +7,12 @@ import {
 } from "@ant-design/icons";
 import {Button, Col, FloatButton, Input, Modal, Row, Tooltip} from "antd";
 import {useState} from "react";
+import Cookie from "js-cookie";
+import {useNavigate} from "react-router-dom";
 
 export const DashboardSetting = () => {
     const {confirm} = Modal;
+    const navigate = useNavigate()
 
     const [changePasswordStatus, setChangePasswordStatus] = useState(false);
 
@@ -34,11 +37,9 @@ export const DashboardSetting = () => {
             centered: true,
             cancelText: 'Cancel',
             onOk() {
-                console.log('OK');
-            },
-            onCancel() {
-                console.log('Cancel');
-            },
+                Cookie.remove("token")
+                navigate("/login")
+            }
         });
     };
 
