@@ -25,10 +25,19 @@ enum Ticket_Priority_Options {
 }
 
 model Tickets {
-  id          Int                     @id @default(autoincrement())
-  title       String
-  priority    Ticket_Priority_Options
-  description String
-  author      Customers               @relation(fields: [customersId], references: [id])
-  customersId Int
+  id         Int                     @id @default(autoincrement())
+  title      String
+  priority   Ticket_Priority_Options
+  createdAt  DateTime                @default(now())
+  customer   Customers               @relation(fields: [customerId], references: [id])
+  customerId Int
+  Chats      Chats[]
+}
+
+model Chats {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  content   String
+  ticket    Tickets  @relation(fields: [ticketId], references: [id])
+  ticketId  Int
 }
