@@ -23,12 +23,12 @@ export const DashboardTable = () => {
         },
         {
             title: 'Requested',
-            dataIndex: 'requested',
+            dataIndex: 'createdAt',
             key: 'requested',
             render: (text) => (
                 <>
                     <Text type="secondary">
-                        {text}
+                        {changeDate(text)}
                     </Text>
                 </>
             )
@@ -112,4 +112,16 @@ export const DashboardTable = () => {
                 pagination={false}/>
         </>
     )
+}
+
+/**
+ * @function
+ * @description It is responsible for changing the numeric date into a readable date
+ * @param {String}dateString
+ * @returns {string}
+ */
+function changeDate(dateString) {
+    const splitDate = dateString.split("T")[0]
+    return new Date(splitDate).toLocaleString('en-US',
+        {dateStyle: 'long'})
 }

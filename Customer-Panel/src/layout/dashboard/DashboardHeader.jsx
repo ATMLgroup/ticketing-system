@@ -1,15 +1,27 @@
-import {Button, Col, Input, Modal, Row, Select, Typography} from "antd";
+import {App, Button, Col, Input, Modal, Row, Select, Typography} from "antd";
 import {PaperClipOutlined, BoldOutlined} from "@ant-design/icons";
 import {useState} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import sendRequestHook from "../../hook/sendRequest"
+import getTicketsData from "../../hook/getTicketsData"
+import {set} from "../../services/redux/tickets"
 
 export const DashboardHeader = () => {
     const {tickets} = useSelector((state) => state.tickets)
+    const dispatch = useDispatch()
 
     const {TextArea} = Input
+    const {Title, Text} = Typography
+    const {message} = App.useApp()
+
+    const [title, setTitle] = useState("");
+    const [priority, setPriority] = useState("");
+    const [description, setDescription] = useState("");
+    const [loadingButton, setLoadingButton] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
 
     const ticketsLength = tickets.length;
-
     const options = [
         {
             value: 'High',
@@ -25,19 +37,49 @@ export const DashboardHeader = () => {
         },
     ]
 
-    const {Title, Text} = Typography
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
     /**
-     * @description open/close modal
-     * @param {Boolean}value true=>open / false=>close
+     * @description It is responsible for sending the request to the server 
+     * @returns {Promise<void>}
      */
-    const modalHandler = (value) => {
-        setIsModalOpen(value)
+    const sendRequest = async () => {
+        if (title && description && priority) {
+            setLoadingButton(true)
+
+            const body = {
+                "title": title,
+                "priority": priority,
+                "description": description
+            }
+
+            const {data, error} = await sendRequestHook("customers/add", "POST", body)
+
+            if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
+                message.success("create ticket successfully")
+                setLoadingButton(false)
+                setIsModalOpen(false)
+                setTitle("")
+                setPriority("")
+                setDescription("")
+            } else {
+                setLoadingButton(false)
+                message.error(error.response.data.detail)
+            }
+        } else {
+            message.error("All values are required")
+        }
     }
 
-    const updateTableList = () => {
-        console.log("Let's update the table list...")
+    /**
+     * @description It is responsible for sending the request to the server and receiving the list of tickets
+     * @returns {Promise<void>}
+     */
+    const updateTableList = async () => {
+        try {
+            const {data} = await getTicketsData()
+            dispatch(set(data))
+        } catch {
+            message.error("error in getting tickets. please refresh the page")
+        }
     }
 
     return (
@@ -53,12 +95,13 @@ export const DashboardHeader = () => {
                     <>
                         <div style={{marginTop: "50px"}}>
                             <Button
-                                onClick={() => modalHandler(false)}
+                                onClick={() => setIsModalOpen(false)}
                                 type={"dashed"}>
                                 Cancel
                             </Button>
                             <Button
-                                onClick={() => modalHandler(false)}
+                                loading={loadingButton}
+                                onClick={() => sendRequest()}
                                 type={"primary"}
                                 style={{backgroundColor: "rgb(4, 195, 56)"}}>
                                 Create
@@ -71,12 +114,15 @@ export const DashboardHeader = () => {
                         <Input
                             placeholder={"Ticket title"}
                             size={"large"}
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
                             style={{width: "80%", marginTop: "10px"}}
                             prefix={<BoldOutlined style={{color: "rgba(0, 0, 0, 0.45)"}}/>}/>
                     </Col>
                     <Col span={6}>
                         <Select
                             size={"large"}
+                            onChange={(e) => setPriority(e)}
                             placeholder="Select a priority"
                             options={options}
                             style={{width: "80%", display: "block", float: "right"}}
@@ -84,6 +130,8 @@ export const DashboardHeader = () => {
                     </Col>
                     <Col span={24}>
                         <TextArea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                             placeholder="Ticket Description"
                             autoSize={{minRows: 5, maxRows: 7}}
                             style={{marginTop: "20px"}}
@@ -113,7 +161,7 @@ export const DashboardHeader = () => {
                         size={"large"}
                         icon={<PaperClipOutlined/>}
                         style={{backgroundColor: "#04C338", float: "right"}}
-                        onClick={() => modalHandler(true)}>
+                        onClick={() => setIsModalOpen(true)}>
                         Create ticket
                     </Button>
                 </Col>
