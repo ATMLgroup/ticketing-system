@@ -27,7 +27,7 @@ module.exports = async (request, response) => {
  */
 function cleanObject(object) {
     for (const key in object) {
-        delete object[key].customersId
+        delete object[key].customerId
     }
     return object
 }
