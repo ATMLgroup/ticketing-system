@@ -13,13 +13,23 @@ module.exports = async (customerId, ticketId) => {
         items: []
     }
     let where = {customerId: customerId}
+    let include = {}
 
     if (ticketId) {
         where = {id: Number(ticketId)}
+        include = {
+            Chats: {
+                select: {
+                    id: true,
+                    createdAt: true,
+                    content: true,
+                },
+            },
+        }
     }
 
     try {
-        response.items = await prismaClient.tickets.findMany({where: where})
+        response.items = await prismaClient.tickets.findMany({where: where, include})
     } catch (err) {
         console.log(err)
         response.status = false
