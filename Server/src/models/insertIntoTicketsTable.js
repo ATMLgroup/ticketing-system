@@ -21,6 +21,7 @@ module.exports = async (customerId, title, priority) => {
                 customerId: customerId,
                 title: title,
                 priority: priority,
+                status: "Pending"
             }
         })
     } catch (err) {

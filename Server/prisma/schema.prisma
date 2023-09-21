@@ -24,10 +24,17 @@ enum Ticket_Priority_Options {
   Low
 }
 
+enum Ticket_Status_Options {
+  Open
+  Pending
+  Close
+}
+
 model Tickets {
   id         Int                     @id @default(autoincrement())
   title      String
   priority   Ticket_Priority_Options
+  status     Ticket_Status_Options
   createdAt  DateTime                @default(now())
   customer   Customers               @relation(fields: [customerId], references: [id])
   customerId Int
