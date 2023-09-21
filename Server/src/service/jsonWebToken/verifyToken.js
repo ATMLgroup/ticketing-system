@@ -12,13 +12,15 @@ module.exports = async (token) => {
 
     let response = {
         status: true,
-        email: ""
+        email: "",
+        id: ""
     }
 
     try {
         const publicKey = readFileSync(join('cert', 'jwt', 'rsa.public.key'), 'utf8')
         const data = await jwt.verify(token, publicKey, {algorithm: 'RS256'});
         response.email = data.email
+        response.id = data.id
     } catch (err) {
         console.log(err)
         response.status = false
