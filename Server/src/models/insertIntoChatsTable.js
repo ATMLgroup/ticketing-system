@@ -3,24 +3,23 @@ const prismaClient = require("./prismaClient")
 /**
  * @module
  * @description insert into Tickets table
- * @param {Number}customerId
- * @param {String}title
- * @param {String}priority
- * @returns {Promise<{message: string, status: boolean,item: object}>}
+ * @param {Number}ticketId
+ * @param {String}content
+ * @param {String}author
+ * @returns {Promise<{message: string, status: boolean}>}
  */
-module.exports = async (customerId, title, priority) => {
+module.exports = async (ticketId, content, author) => {
     let response = {
         status: true,
-        item: {},
         message: ""
     }
 
     try {
-        response.item = await prismaClient.tickets.create({
+        let customContent = JSON.stringify({content: content, author: author})
+        await prismaClient.chats.create({
             data: {
-                customerId: customerId,
-                title: title,
-                priority: priority,
+                content: customContent,
+                ticketId: ticketId
             }
         })
     } catch (err) {
