@@ -11,11 +11,13 @@ const signUpController = require("../controllers/customers/signUp.controller")
 const signInController = require("../controllers/customers/signIn.controller")
 const changePasswordController = require("../controllers/customers/changePassword.controller")
 const addController = require("../controllers/customers/add.controller")
+const ticketsController = require("../controllers/customers/tickets.controller")
 
 router.post("/signup", signUpMiddleware, signUpController)
 router.post("/signin", signInMiddleware, signInController)
 router.use(authenticationMiddleware)
 router.post("/change_password", changePasswordMiddleware, changePasswordController)
 router.post("/add", addMiddleware, addController)
+router.get("/tickets", ticketsController)
 
 module.exports = router
