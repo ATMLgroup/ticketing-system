@@ -13,8 +13,8 @@ export const LoginInputs = ({signedInButton}) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const [passwordError, setPasswordError] = useState("")
+    const [emailError, setEmailError] = useState("error");
+    const [passwordError, setPasswordError] = useState("error")
     const [buttonLoading, setLoadingButton] = useState(false)
 
     /**
@@ -24,6 +24,7 @@ export const LoginInputs = ({signedInButton}) => {
      */
     const EmailInputHandler = (e) => {
         setEmail(e.target.value)
+        // eslint-disable-next-line
         const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         const testRegex = regex.test(email)
         if (!testRegex) {
