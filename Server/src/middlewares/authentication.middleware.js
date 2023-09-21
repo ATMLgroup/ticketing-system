@@ -3,10 +3,15 @@ const verifyToken = require("../service/jsonWebToken/verifyToken")
 
 module.exports = async (request, response, next) => {
     const {authorization} = request.headers
-    const {email, status} = await verifyToken(authorization)
-    if (status) {
-        request.email = email
-        next()
+    if (authorization) {
+        const {email, id, status} = await verifyToken(authorization)
+        if (status) {
+            request.email = email
+            request.id = id
+            next()
+        } else {
+            unauthorizedResponse(response)
+        }
     } else {
         unauthorizedResponse(response)
     }

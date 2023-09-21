@@ -13,7 +13,7 @@ module.exports = async (request, response) => {
         if (databaseResponse.status && hashedPassword) {
             const comparePassword = await argon2.verify(hashedPassword, password)
             if (comparePassword) {
-                const token = await createToken(email)
+                const token = await createToken(email, databaseResponse.items.id)
                 if (token.status) {
                     successResponse(response, {token: token.token})
                 } else {
