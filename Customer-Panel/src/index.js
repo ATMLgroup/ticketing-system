@@ -11,11 +11,12 @@ import {Login} from "./pages/Login"
 import {NotFound} from "./pages/NotFound"
 import {Dashboard} from "./pages/Dashboard"
 import {Index} from "./pages/Index";
+import getTicketsData from "./hook/getTicketsData"
 
 const router = createBrowserRouter([
     {
-      path:"/",
-      element:  <Index/>
+        path: "/",
+        element: <Index/>
     },
     {
         path: "/login",
@@ -24,6 +25,8 @@ const router = createBrowserRouter([
     {
         path: "/dashboard",
         element: <Dashboard/>,
+        loader: getTicketsData,
+        errorElement: <NotFound/>
     },
     {
         path: "*",
@@ -34,10 +37,10 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-       <Provider store={store}>
-           <App>
-               <RouterProvider router={router}/>
-           </App>
-       </Provider>
+        <Provider store={store}>
+            <App>
+                <RouterProvider router={router}/>
+            </App>
+        </Provider>
     </React.StrictMode>
 );

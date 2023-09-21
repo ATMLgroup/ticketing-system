@@ -1,37 +1,12 @@
 import {Button, Table, Tag, Tooltip, Typography} from "antd";
 import {EyeOutlined} from "@ant-design/icons";
 import {useEffect} from "react";
+import {useSelector} from "react-redux";
 
 export const DashboardTable = () => {
 
     const {Text} = Typography
-
-    const dataSource = [
-        {
-            key: '1',
-            title: 'Can not access the system. please help me!',
-            requested: '15 September 2023',
-            priority: 'High',
-            status: 'Open',
-            view: '->'
-        },
-        {
-            key: '2',
-            title: 'Can not access the system. please help me!',
-            requested: '15 September 2023',
-            priority: 'Medium',
-            status: 'Pending',
-            view: '->'
-        },
-        {
-            key: '3',
-            title: 'Can not access the system. please help me!',
-            requested: '15 September 2023',
-            priority: 'Low',
-            status: 'Close',
-            view: '->'
-        }
-    ];
+    const {tickets} = useSelector((state) => state.tickets)
 
     const columns = [
         {
@@ -132,7 +107,7 @@ export const DashboardTable = () => {
         <>
             <Table
                 align={"center"}
-                dataSource={dataSource}
+                dataSource={tickets}
                 columns={columns}
                 pagination={false}/>
         </>
