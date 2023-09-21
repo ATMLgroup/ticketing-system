@@ -12,7 +12,7 @@ module.exports = async (customerId, ticketId) => {
         status: true,
         items: []
     }
-    let where = {customersId: customerId}
+    let where = {customerId: customerId}
 
     if (ticketId) {
         where = {id: Number(ticketId)}
