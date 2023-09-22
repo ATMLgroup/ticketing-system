@@ -63,8 +63,8 @@ export const LoginInputs = ({signedInButton}) => {
         })
         setLoadingButton(false)
         if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
+            await Cookie.set("token", data.data.token, {expires: expiresCookie})
             navigate("/dashboard")
-            Cookie.set("token", data.data.token, {expires: expiresCookie})
         } else {
             message.error(error.response.data.detail)
         }
