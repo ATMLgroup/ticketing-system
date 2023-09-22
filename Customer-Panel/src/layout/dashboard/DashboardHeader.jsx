@@ -58,7 +58,6 @@ export const DashboardHeader = () => {
                 setLoadingButton(false)
                 setIsModalOpen(false)
                 setTitle("")
-                setPriority("")
                 setDescription("")
             } else {
                 setLoadingButton(false)
