@@ -1,12 +1,23 @@
-import {Button, Table, Tag, Tooltip, Typography} from "antd";
+import {App, Button, Col, Input, Modal, Row, Table, Tag, Tooltip, Typography} from "antd";
 import {EyeOutlined} from "@ant-design/icons";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
+import sendRequest from "../../hook/sendRequest"
+import style from "../../styles/dashboard/dashboard.module.css"
 
 export const DashboardTable = () => {
 
     const {Text} = Typography
+    const {TextArea} = Input
+    const {message} = App.useApp()
+
     const {tickets} = useSelector((state) => state.tickets)
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [modalTitle, setModalTitle] = useState("")
+    const [modalStatus, setModalStatus] = useState("")
+    const [modalChats, setModalChats] = useState([])
+    const [reply, setReply] = useState("")
 
     const columns = [
         {
@@ -78,12 +89,13 @@ export const DashboardTable = () => {
         },
         {
             title: 'View',
-            dataIndex: 'view',
+            dataIndex: 'id',
             key: 'view',
-            render: () => (
+            render: (id) => (
                 <>
                     <Tooltip title="View Ticket">
                         <Button
+                            onClick={() => openTicketDetails(id)}
                             style={{display: "table", margin: "0 auto"}}
                             shape="circle"
                             icon={<EyeOutlined/>}/>
@@ -103,6 +115,55 @@ export const DashboardTable = () => {
         })
     }, []);
 
+    /**
+     * @description It is responsible for sending requests to the server and receiving information and separating it
+     * @param {Number}id
+     * @returns {Promise<void>}
+     */
+    const openTicketDetails = async (id) => {
+        const {data} = await sendRequest(`customers/tickets?ticket_id=${id}`, "GET", {})
+        if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
+            setModalTitle(data.data[0].title)
+            setModalStatus(data.data[0].status)
+            setModalChats(updateContentForShow(data.data[0].Chats))
+            setIsModalOpen(true)
+        } else {
+            message.error("error in getting ticket details. please try again later")
+        }
+    }
+
+    /**
+     * @description It is responsible for updating content array from server and convert to readable content
+     * @param {Array}chats
+     * @returns {*[]}
+     */
+    const updateContentForShow = (chats) => {
+        const convertedChats = []
+        for (const chat of chats) {
+            const chatObject = JSON.parse(chat.content)
+            const splitDateArray = chat.createdAt.split("T")
+            const date = splitDateArray[0]
+            const time = splitDateArray[1].split(".")[0]
+            convertedChats.push({
+                content: chatObject,
+                createdAt: date + " " + time
+            })
+        }
+
+        return convertedChats
+    }
+
+    /**
+     * @description It is responsible for changing the numeric date into a readable date
+     * @param {String}dateString
+     * @returns {string}
+     */
+    const changeDate = (dateString) => {
+        const splitDate = dateString.split("T")[0]
+        return new Date(splitDate).toLocaleString('en-US',
+            {dateStyle: 'long'})
+    }
+
     return (
         <>
             <Table
@@ -110,18 +171,61 @@ export const DashboardTable = () => {
                 dataSource={tickets}
                 columns={columns}
                 pagination={false}/>
+
+            <Modal
+                centered
+                width={"85%"}
+                closable={false}
+                title={modalTitle}
+                open={isModalOpen}
+                footer={(_, {OkBtn, CancelBtn}) => (
+                    <>
+                        <div style={{marginTop: "50px"}}>
+                            <Button
+                                onClick={() => setIsModalOpen(false)}
+                                type={"dashed"}>
+                                Close
+                            </Button>
+                            {
+                                modalStatus !== "Close" && (<Button
+                                    type={"primary"}
+                                    style={{backgroundColor: "rgb(4, 195, 56)"}}>
+                                    Send reply
+                                </Button>)
+                            }
+                        </div>
+                    </>
+                )}>
+                <Row align={"middle"}>
+                    {
+                        modalChats.map(item => {
+                            return (
+                                <Col span={24}>
+                                    <div
+                                        className={`${item.content.author === 'user' ? style.authorChat : style.adminChat}`}>
+                                        <p>
+                                            {item.content.content}
+                                        </p>
+                                        <span>
+                                            {item.createdAt}
+                                        </span>
+                                    </div>
+                                </Col>
+                            )
+
+                        })
+                    }
+                    <Col span={24}>
+                        <TextArea
+                            value={reply}
+                            onChange={(e) => setReply(e.target.value)}
+                            placeholder="Ticket reply"
+                            autoSize={{minRows: 5, maxRows: 7}}
+                            style={{marginTop: "20px"}}
+                        />
+                    </Col>
+                </Row>
+            </Modal>
         </>
     )
-}
-
-/**
- * @function
- * @description It is responsible for changing the numeric date into a readable date
- * @param {String}dateString
- * @returns {string}
- */
-function changeDate(dateString) {
-    const splitDate = dateString.split("T")[0]
-    return new Date(splitDate).toLocaleString('en-US',
-        {dateStyle: 'long'})
 }
