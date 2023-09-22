@@ -261,15 +261,19 @@ export const DashboardTable = () => {
 
                         })
                     }
-                    <Col span={24}>
-                        <TextArea
-                            value={reply}
-                            onChange={(e) => setReply(e.target.value)}
-                            placeholder="Ticket reply"
-                            autoSize={{minRows: 5, maxRows: 7}}
-                            style={{marginTop: "20px"}}
-                        />
-                    </Col>
+                    {
+                        modalStatus !== "close" && (
+                            <Col span={24}>
+                                <TextArea
+                                    value={reply}
+                                    onChange={(e) => setReply(e.target.value)}
+                                    placeholder="Ticket reply"
+                                    autoSize={{minRows: 5, maxRows: 7}}
+                                    style={{marginTop: "20px"}}
+                                />
+                            </Col>
+                        )
+                    }
                 </Row>
             </Modal>
         </>
