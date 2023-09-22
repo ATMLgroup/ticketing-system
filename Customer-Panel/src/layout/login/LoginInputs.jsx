@@ -16,6 +16,7 @@ export const LoginInputs = ({signedInButton}) => {
     const [emailError, setEmailError] = useState("error");
     const [passwordError, setPasswordError] = useState("error")
     const [buttonLoading, setLoadingButton] = useState(false)
+    const [expiresCookie, setExpiresCookie] = useState(1)
 
     /**
      * @description To save the email and check its correctness
@@ -63,11 +64,21 @@ export const LoginInputs = ({signedInButton}) => {
         setLoadingButton(false)
         if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
             navigate("/dashboard")
-            Cookie.set("token", data.data.token)
+            Cookie.set("token", data.data.token, {expires: expiresCookie})
         } else {
             message.error(error.response.data.detail)
         }
     };
+
+    /**
+     * @description check checkBox status for create expires cookie
+     * @param {boolean}value
+     */
+    const keepLogin = (value) => {
+        if (value === true) {
+            setExpiresCookie(7)
+        }
+    }
 
     return (
         <>
@@ -91,8 +102,12 @@ export const LoginInputs = ({signedInButton}) => {
                     onChange={(e) => PasswordInputHandler(e)}
                 />
                 {signedInButton && (
-                    <Checkbox style={{marginBottom: "10px"}}>
-                        <Text type={"secondary"}>Keep me signed in</Text>
+                    <Checkbox
+                        style={{marginBottom: "10px"}}
+                        onClick={(value) => keepLogin(value.target.checked)}>
+                        <Text type={"secondary"}>
+                            Keep me signed in
+                        </Text>
                     </Checkbox>
                 )}
                 <Button
