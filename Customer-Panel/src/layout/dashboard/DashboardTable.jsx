@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {App, Button, Col, Input, Modal, Row, Table, Tag, Tooltip, Typography} from "antd";
 import {EyeOutlined} from "@ant-design/icons";
 import {useEffect, useState} from "react";
@@ -11,7 +12,7 @@ export const DashboardTable = () => {
     const {TextArea} = Input
     const {message} = App.useApp()
 
-    const {tickets} = useSelector((state) => state.tickets)
+    const {showTicketsList} = useSelector((state) => state.tickets)
 
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalId, setModalId] = useState(0)
@@ -212,7 +213,7 @@ export const DashboardTable = () => {
         <>
             <Table
                 align={"center"}
-                dataSource={tickets}
+                dataSource={showTicketsList}
                 columns={columns}
                 pagination={false}/>
 
