@@ -7,7 +7,7 @@ import {show} from "../../services/redux/tickets"
 export const DashboardFilter = () => {
     const {Text} = Typography
 
-    const {showTicketsList, currentPage, tickets} = useSelector((state) => state.tickets)
+    const {tickets} = useSelector((state) => state.tickets)
 
     const [currentIndex, setCurrentIndex] = useState(1)
     const [totalIndex, setTotalIndex] = useState(1);
@@ -55,6 +55,20 @@ export const DashboardFilter = () => {
         dispatch(show(currentTickets))
     }
 
+    // filtering tickets
+    useEffect(() => {
+        setCurrentIndex(1)
+
+        if (searchText.length > 0) {
+            const filteredTickets = tickets.filter(item => {
+                return item.title.includes(searchText)
+            })
+            dispatch(show(filteredTickets))
+        } else {
+            updateTicketList()
+        }
+    }, [searchText, dispatch,tickets]);
+
     return (
         <>
             <Row
@@ -64,28 +78,34 @@ export const DashboardFilter = () => {
                 <Col span={8}>
                     <Input
                         placeholder={"Search"}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        value={searchText}
                         prefix={<SearchOutlined style={{color: "#00000073"}}/>}
                         style={{width: "80%"}}/>
                 </Col>
-                <Col span={4}>
-                    <Text style={{float: "right"}}>
-                        {
-                            currentIndex !== 1 && (
-                                <LeftOutlined
-                                    style={{cursor: "pointer", paddingRight: "10px"}}
-                                    onClick={() => previousTicketsList()}/>
-                            )
-                        }
-                        {currentIndex} - {totalIndex} Pages
-                        {
-                            currentIndex !== totalIndex && (
-                                <RightOutlined
-                                    style={{cursor: "pointer", paddingLeft: "10px"}}
-                                    onClick={() => nextTicketsList()}/>
-                            )
-                        }
-                    </Text>
-                </Col>
+                {
+                    searchText.length === 0 && (
+                        <Col span={4}>
+                            <Text style={{float: "right"}}>
+                                {
+                                    currentIndex !== 1 && (
+                                        <LeftOutlined
+                                            style={{cursor: "pointer", paddingRight: "10px"}}
+                                            onClick={() => previousTicketsList()}/>
+                                    )
+                                }
+                                {currentIndex} - {totalIndex} Pages
+                                {
+                                    currentIndex !== totalIndex && (
+                                        <RightOutlined
+                                            style={{cursor: "pointer", paddingLeft: "10px"}}
+                                            onClick={() => nextTicketsList()}/>
+                                    )
+                                }
+                            </Text>
+                        </Col>
+                    )
+                }
             </Row>
         </>
     )
