@@ -14,10 +14,12 @@ export const DashboardTable = () => {
     const {tickets} = useSelector((state) => state.tickets)
 
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [modalId, setModalId] = useState(0)
     const [modalTitle, setModalTitle] = useState("")
     const [modalStatus, setModalStatus] = useState("")
     const [modalChats, setModalChats] = useState([])
     const [reply, setReply] = useState("")
+    const [replyButtonLoading, setReplyButtonLoading] = useState(false)
 
     const columns = [
         {
@@ -123,6 +125,7 @@ export const DashboardTable = () => {
     const openTicketDetails = async (id) => {
         const {data} = await sendRequest(`customers/tickets?ticket_id=${id}`, "GET", {})
         if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
+            setModalId(id)
             setModalTitle(data.data[0].title)
             setModalStatus(data.data[0].status)
             setModalChats(updateContentForShow(data.data[0].Chats))
@@ -164,6 +167,47 @@ export const DashboardTable = () => {
             {dateStyle: 'long'})
     }
 
+    /**
+     * @description It is responsible for sending reply message to server
+     * @returns {Promise<void>}
+     */
+    const sendReply = async () => {
+        if (reply) {
+            setReplyButtonLoading(true)
+
+            const body = {
+                ticketId: modalId,
+                content: reply
+            }
+
+            const {data, error} = await sendRequest("customers/reply", "POST", body)
+
+            if (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length !== 0) {
+                setReply("")
+                setReplyButtonLoading(false)
+                await updateChats()
+            } else {
+                message.error(error.response.data.detail)
+            }
+        } else {
+            message.error("reply cannot be empty")
+        }
+    }
+
+    /**
+     * @description It is responsible for getting chat list and showing updated chat
+     * @returns {Promise<void>}
+     */
+    const updateChats = async () => {
+        const {data: ticketData} = await sendRequest(`customers/tickets?ticket_id=${modalId}`, "GET", {})
+
+        if (typeof ticketData === 'object' && !Array.isArray(ticketData) && Object.keys(ticketData).length !== 0) {
+            setModalChats(updateContentForShow(ticketData.data[0].Chats))
+        } else {
+            message.error("error in getting ticket details. please try again later")
+        }
+    }
+
     return (
         <>
             <Table
@@ -188,6 +232,8 @@ export const DashboardTable = () => {
                             </Button>
                             {
                                 modalStatus !== "Close" && (<Button
+                                    loading={replyButtonLoading}
+                                    onClick={() => sendReply()}
                                     type={"primary"}
                                     style={{backgroundColor: "rgb(4, 195, 56)"}}>
                                     Send reply
