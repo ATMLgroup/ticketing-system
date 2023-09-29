@@ -1,14 +1,14 @@
 const successResponse = require("../../response/success")
 const badRequestResponse = require("../../response/badRequest")
 const serverErrorResponse = require("../../response/serverError")
-const selectByIdInTicketsTable = require("../../models/selectByIdInTicketsTable")
+const selectAllInTicketsTable = require("../../models/selectAllInTicketsTable")
 const updateStatusById = require("../../models/updateStatusById")
 
 module.exports = async (request, response) => {
     try {
         const id = request.id
         const {ticket_id: ticketId} = request.query
-        const {status, items} = await selectByIdInTicketsTable(id, ticketId || undefined)
+        const {status, items} = await selectAllInTicketsTable(ticketId || undefined)
         if (ticketId) {
             await updateStatusById(Number(ticketId))
         }
