@@ -37,5 +37,5 @@ module.exports = async (request, response) => {
  */
 async function checkTicketOwner(ticketId, customerId) {
     const {items} = await selectByIdInTicketsTable(customerId, ticketId)
-    return items.length !== 0
+    return items.length !== 0 && items[0].status !== "Close"
 }
