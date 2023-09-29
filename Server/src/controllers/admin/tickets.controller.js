@@ -10,7 +10,7 @@ module.exports = async (request, response) => {
         const {ticket_id: ticketId} = request.query
         const {status, items} = await selectAllInTicketsTable(ticketId || undefined)
         if (ticketId) {
-            await updateStatusById(Number(ticketId))
+            await updateStatusById(ticketId, "Open")
         }
         if (status) {
             successResponse(response, cleanObject(items))

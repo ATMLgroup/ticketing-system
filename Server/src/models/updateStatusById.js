@@ -3,10 +3,11 @@ const prismaClient = require("./prismaClient")
 /**
  * @module
  * @description update open status in Ticket table where id === id
- * @param {Number}id
+ * @param {String}id
+ * @param {String}status Open & Pending & Close
  * @returns {Promise<{items: *[], status: boolean}>}
  */
-module.exports = async (id) => {
+module.exports = async (id, status) => {
     let response = {
         status: true,
         items: []
@@ -14,10 +15,10 @@ module.exports = async (id) => {
     try {
         response.items = await prismaClient.tickets.update({
             where: {
-                id: id
+                id: Number(id)
             },
             data: {
-                status: "Open"
+                status: status
             }
         })
     } catch (err) {
