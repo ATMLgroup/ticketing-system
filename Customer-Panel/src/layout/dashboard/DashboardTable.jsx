@@ -263,7 +263,7 @@ export const DashboardTable = () => {
                         })
                     }
                     {
-                        modalStatus !== "close" && (
+                        modalStatus !== "Close" && (
                             <Col span={24}>
                                 <TextArea
                                     value={reply}
